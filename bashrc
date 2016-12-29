@@ -13,5 +13,11 @@ export EDITOR=/usr/bin/vim
 # Prompt color
 PS1="\[\e[0;93m\]\u@\h \w\$ \[\e[m\]"
 
+# Change color for directories
+alias ls='ls --color'
+#LS_COLORS=$LS_COLORS:'di=1;95:'
+LS_COLORS=$LS_COLORS:'di=1;34:'
+export LS_COLORS
+
 # Add local bin to PATH
 export PATH=/home/$USER/bin:$PATH
