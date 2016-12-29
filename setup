@@ -1,0 +1,4 @@
+#!/bin/bash
+# This bash script creates a symlink in the users home directory
+ln -s ~/.dotfiles/bashrc ~/.bashrc
+ln -s ~/.dotfiles/profile ~/.profile
