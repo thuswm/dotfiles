@@ -13,10 +13,12 @@ export EDITOR=/usr/bin/vim
 # Prompt color
 PS1="\[\e[0;93m\]\u@\h \w\$ \[\e[m\]"
 
-# Change color for directories
+# Change color for ls output
 alias ls='ls --color'
-#LS_COLORS=$LS_COLORS:'di=1;95:'
-LS_COLORS=$LS_COLORS:'di=1;34:'
+LS_COLORS=$LS_COLORS:'di=1;32:' # directory
+LS_COLORS=$LS_COLORS:'ln=1;35:' # symbolic link
+LS_COLORS=$LS_COLORS:'or=1;35:' # symbolic link to orphan
+LS_COLORS=$LS_COLORS:'ex=1;31:' # executable
 export LS_COLORS
 
 # Add local bin to PATH
