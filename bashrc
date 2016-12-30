@@ -18,7 +18,7 @@ alias ls='ls --color'
 LS_COLORS=$LS_COLORS:'di=1;32:' # directory
 LS_COLORS=$LS_COLORS:'ln=1;35:' # symbolic link
 LS_COLORS=$LS_COLORS:'or=1;35:' # symbolic link to orphan
-LS_COLORS=$LS_COLORS:'ex=1;31:' # executable
+LS_COLORS=$LS_COLORS:'ex=0;32:' # executable
 export LS_COLORS
 
 # Add local bin to PATH
