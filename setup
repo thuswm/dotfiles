@@ -1,5 +1,43 @@
 #!/bin/bash
-# This bash script creates a symlink in the users home directory
-ln -s ~/.dotfiles/bashrc ~/.bashrc
-ln -s ~/.dotfiles/profile ~/.profile
-ln -s ~/.dotfiles/ipython/ipython_config.py ~/.ipython/profile_default/ipython_config.py
+# This bash script creates symlinks in the users home directory
+
+# Locate the git directory with all config files
+gitHome=.dotfiles/
+
+# Create sybolic links for the following files and directories
+# Usage: symLink[from]=to
+declare -A symLink
+symLink[.bashrc]=bashrc
+symLink[.profile]=profile
+symLink[.ipython/profile_default/ipython_config.py]=ipython/ipython_config.py
+
+# Setup output colors
+Red='\033[0;31m'
+Yellow='\033[0;33m'
+Green='\033[0;32m'
+NC='\033[0m' # no color
+
+# Setup all missing symbolic links specified in the associated array symLink
+for name in "${!symLink[@]}"
+do
+  echo -e "=== Setup: $name ==="
+  if [ -h ~/$name ] # Check if symlink exists
+  then
+    echo -e "${Yellow}- Warning: Symbolic link to $name exists!${NC}"
+  else
+    if [ -a ~/$name ] # Check if file exists
+    then
+      echo -e "${Red}- Removing detected file!${NC}"
+      rm ~/$name
+    else
+      echo -e "${Yellow}- Warning: $name does not exist! Creating link anyway!${NC}"
+    fi
+
+    # Setup symbolic link
+    echo -e "${Green}- Creating symbolic link${NC}"
+    # ln -s target_path link_path
+    ln -s ~/$gitHome${symLink[$name]} ~/$name
+  fi
+done
+
+echo -e "${Green}Setup completed${NC}"
