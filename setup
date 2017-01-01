@@ -1,9 +1,27 @@
 #!/bin/bash
-# This bash script creates symlinks in the users home directory
 
+# This bash script is a setup script for my home folder. The script creates
+# my standard folder structure and symlinks to important dot files (and
+# also some other files) in the users home directory.
+
+# Author thuswm <thuswm@gmail.com>
+
+# === Script settings ======================================================
 # Locate the git directory with all config files
 gitHome=.dotfiles/
 
+# === Folder settings ===
+CREATE_FOLDER_STRUCTURE=true
+# The folder list contains the folders to be created
+folderList="bin"
+folderList="$folderList projects" # my projects folder
+folderList="$folderList texmf/tex/latex/mtgeneral" # LaTex template
+folderList="$folderList slask"
+
+echo -e $folderList
+
+# === Symbolic link settings ===
+CREATE_SYMBOLIC_LINKS=true
 # Create sybolic links for the following files and directories
 # Usage: symLink[from]=to
 declare -A symLink
@@ -11,33 +29,71 @@ symLink[.bashrc]=bashrc
 symLink[.profile]=profile
 symLink[.ipython/profile_default/ipython_config.py]=ipython/ipython_config.py
 
-# Setup output colors
+# === Colors settings ===
 Red='\033[0;31m'
 Yellow='\033[0;33m'
 Green='\033[0;32m'
 NC='\033[0m' # no color
 
-# Setup all missing symbolic links specified in the associated array symLink
-for name in "${!symLink[@]}"
-do
-  echo -e "=== Setup: $name ==="
-  if [ -h ~/$name ] # Check if symlink exists
-  then
-    echo -e "${Yellow}- Warning: Symbolic link to $name exists!${NC}"
-  else
-    if [ -a ~/$name ] # Check if file exists
-    then
-      echo -e "${Red}- Removing detected file!${NC}"
-      rm ~/$name
-    else
-      echo -e "${Yellow}- Warning: $name does not exist! Creating link anyway!${NC}"
-    fi
+# === Create folder structure ==============================================
+if $CREATE_FOLDER_STRUCTURE
+then
 
-    # Setup symbolic link
-    echo -e "${Green}- Creating symbolic link${NC}"
-    # ln -s target_path link_path
-    ln -s ~/$gitHome${symLink[$name]} ~/$name
-  fi
-done
+  echo -e "=== Create folder structure ==="
+
+  cd ~/
+
+  for folder in $folderList
+  do
+    subFolders=${folder//'/'/' '} # replace all / in the string with blank
+
+    for sub in $subFolders
+    do
+
+      if [ -d $sub ]
+      then
+        echo -e "  $PWD/$sub ${Green}Exists!${NC}"
+        cd $sub
+      else
+        echo -e "  ${Yellow}Creating folder ${PWD}/$sub${NC}"
+        mkdir $sub
+        cd $sub
+      fi
+    done
+
+    cd ~/
+
+  done
+fi # CREATE_FOLDER_STRUCTURE
+
+
+# === Symbolic links to dotfiles ===========================================
+
+if $CREATE_SYMBOLIC_LINKS
+then
+
+  # Setup all missing symbolic links specified in the associated array symLink
+  for name in "${!symLink[@]}"
+  do
+    echo -e "=== Setup: $name ==="
+    if [ -h ~/$name ] # Check if symlink exists
+    then
+      echo -e "${Yellow}- Warning: Symbolic link to $name exists!${NC}"
+    else
+      if [ -a ~/$name ] # Check if file exists
+      then
+        echo -e "${Red}- Removing detected file!${NC}"
+        rm ~/$name
+      else
+        echo -e "${Yellow}- Warning: $name does not exist! Creating link anyway!${NC}"
+      fi
+
+      # Setup symbolic link
+      echo -e "${Green}- Creating symbolic link${NC}"
+      # ln -s target_path link_path
+      ln -s ~/$gitHome${symLink[$name]} ~/$name
+    fi
+  done
+fi # CREATE_SYMBOLIC_LINKS
 
 echo -e "${Green}Setup completed${NC}"
